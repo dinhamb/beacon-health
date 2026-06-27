@@ -1,0 +1,192 @@
+---
+/**
+ * Front gateway. Same architecture as before: quick credibility, then route the
+ * visitor to the right service track. The visual treatment has been lifted into
+ * a more premium, specialist healthcare-consultancy register.
+ */
+import Base from '../layouts/Base.astro';
+import RoutingTile from '../components/RoutingTile.astro';
+import CalibrationGrid from '../components/CalibrationGrid.astro';
+import { TRACKS, TRACK_ORDER, withBase } from '../site.ts';
+
+const heroPhoto = withBase('/assets/diagnostics-hero-photo-1440.jpg');
+const supportPhoto = withBase('/assets/diagnostics-workstation-photo-1200.jpg');
+---
+
+<Base
+  title="Beacon Diagnostics"
+  description="Beacon Diagnostics turns continuous, noisy data into discrete, verified findings - across imaging and equipment QC, and remote cardiac diagnostics."
+  navVariant="gateway"
+>
+  <section class="gateway-hero panel-navy">
+    <div class="grid-container">
+      <div class="col gateway-hero__content" style="--from:1;--to:7" data-reveal>
+        <p class="eyebrow">Diagnostics consultancy</p>
+        <h1 class="gateway-hero__title">Clinical clarity, resolved with precision.</h1>
+        <p class="gateway-hero__sub measure">
+          Beacon Diagnostics turns complex clinical and equipment data into
+          findings leaders can act on with confidence.
+        </p>
+        <div class="gateway-hero__signals" aria-label="Core qualities">
+          <span>Trust</span>
+          <span>Precision</span>
+          <span>Clarity</span>
+        </div>
+      </div>
+
+      <div class="col gateway-hero__visual" style="--from:7;--to:13" data-reveal>
+        <picture>
+          <source srcset={heroPhoto} media="(min-width: 760px)" />
+          <img src={heroPhoto} alt="Diagnostic imaging workstation in a specialist clinical technology suite" />
+        </picture>
+        <div class="gateway-hero__motif" aria-hidden="true">
+          <CalibrationGrid tone="navy" caption="signal resolved" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="gateway-route">
+    <div class="grid-container">
+      <div class="col gateway-route__lead" style="--from:3;--to:11" data-reveal>
+        <p class="eyebrow">Specialist focus</p>
+        <h2 class="gateway-route__h2">Choose the service track you came for.</h2>
+        <p class="gateway-route__note">
+          Same operating principle: transform noise into a decision-ready finding.
+        </p>
+      </div>
+    </div>
+    <div class="grid-container gateway-route__tiles">
+      <div class="col" style="--from:1;--to:7" data-reveal>
+        <RoutingTile
+          href={TRACKS[TRACK_ORDER[0]].href}
+          icon={TRACKS[TRACK_ORDER[0]].icon}
+          title={TRACKS[TRACK_ORDER[0]].label}
+          blurb={TRACKS[TRACK_ORDER[0]].blurb}
+          image={supportPhoto}
+        />
+      </div>
+      <div class="col" style="--from:7;--to:13" data-reveal>
+        <RoutingTile
+          href={TRACKS[TRACK_ORDER[1]].href}
+          icon={TRACKS[TRACK_ORDER[1]].icon}
+          title={TRACKS[TRACK_ORDER[1]].label}
+          blurb={TRACKS[TRACK_ORDER[1]].blurb}
+          image={heroPhoto}
+        />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .gateway-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(5rem, 8vw, 9rem);
+    border-bottom: 1px solid var(--color-on-navy-line);
+  }
+  .gateway-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 78% 18%, rgba(212, 160, 23, 0.18), transparent 24rem),
+      linear-gradient(115deg, rgba(11, 36, 71, 0.98) 0%, rgba(11, 36, 71, 0.92) 46%, rgba(11, 36, 71, 0.72) 100%);
+  }
+  .gateway-hero .grid-container {
+    position: relative;
+    align-items: center;
+    row-gap: var(--space-8);
+  }
+  .gateway-hero__content { max-width: 58ch; }
+  .gateway-hero__title {
+    margin-top: var(--space-4);
+    max-width: 11ch;
+  }
+  .gateway-hero__sub {
+    margin-top: var(--space-5);
+    font-size: var(--fs-lead);
+    color: var(--color-on-navy-dim);
+    max-width: 45ch;
+  }
+  .gateway-hero__signals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-7);
+  }
+  .gateway-hero__signals span {
+    border: 1px solid var(--color-on-navy-line);
+    border-radius: 999px;
+    padding: 0.55rem 0.85rem;
+    color: #fff;
+    font-size: var(--fs-small);
+    font-weight: var(--weight-medium);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .gateway-hero__visual {
+    position: relative;
+    min-height: 460px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--color-on-navy-line);
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.32);
+    background: #071a32;
+  }
+  .gateway-hero__visual picture,
+  .gateway-hero__visual img {
+    width: 100%;
+    height: 100%;
+    min-height: inherit;
+  }
+  .gateway-hero__visual img {
+    object-fit: cover;
+    object-position: center;
+    opacity: 0.78;
+  }
+  .gateway-hero__visual::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(11, 36, 71, 0.08), rgba(11, 36, 71, 0.55));
+  }
+  .gateway-hero__motif {
+    position: absolute;
+    right: var(--space-5);
+    bottom: var(--space-5);
+    width: min(58%, 360px);
+    opacity: 0.7;
+    z-index: 1;
+  }
+
+  .gateway-route {
+    padding-block: var(--space-10);
+    background: linear-gradient(180deg, #fff 0%, var(--color-bg) 100%);
+  }
+  .gateway-route__lead { text-align: center; margin-bottom: var(--space-8); }
+  .gateway-route__h2 {
+    max-width: 18ch;
+    margin: var(--space-3) auto 0;
+  }
+  .gateway-route__note {
+    margin: var(--space-4) auto 0;
+    color: var(--color-slate);
+    font-size: var(--fs-lead);
+    max-width: 48ch;
+  }
+  .gateway-route__tiles { row-gap: var(--gutter); }
+
+  @media (max-width: 880px) {
+    .gateway-hero__content { text-align: left; }
+    .gateway-hero__sub { margin-inline: 0; }
+    .gateway-hero__title { max-width: 12ch; }
+    .gateway-hero__visual { min-height: 320px; }
+    .gateway-route__lead { text-align: left; }
+    .gateway-route__h2,
+    .gateway-route__note { margin-inline: 0; }
+  }
+</style>

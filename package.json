@@ -1,0 +1,20 @@
+{
+  "name": "beacon-diagnostics",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Beacon Diagnostics — marketing site. Built to the Brand Foundations spec (Astro, islands, near-zero JS).",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "encrypt-portal": "node scripts/encrypt-portal.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.1.1",
+    "@fontsource-variable/source-serif-4": "^5.1.1",
+    "astro": "^5.2.5"
+  }
+}

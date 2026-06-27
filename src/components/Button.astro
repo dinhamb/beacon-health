@@ -1,0 +1,104 @@
+---
+/**
+ * Button / CTA (Layer 2.1 + 2.2 + 4.2).
+ * - primary:   Deep Amber fill + white text — the accessible amber-on-light pair.
+ * - secondary: bordered slate on light, no fill (never a second competing amber).
+ * - on-navy:   Bright Amber fill + DARK text — the only accessible amber pair on
+ *              a navy panel (7.06:1). Deep amber goes muddy on navy.
+ * Press state scales to 0.98 — no shadow, no glow, no color shift (4.2).
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'on-navy';
+  icon?: string;
+  class?: string;
+  type?: 'button' | 'submit';
+}
+
+const {
+  href,
+  variant = 'primary',
+  icon = 'arrow-right',
+  class: className = '',
+  type = 'button',
+} = Astro.props;
+
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  class={`btn btn--${variant} ${className}`}
+  href={href}
+  type={href ? undefined : type}
+>
+  <span class="btn__label"><slot /></span>
+  {icon && <Icon name={icon as any} size={18} stroke={2} class="btn__icon" />}
+</Tag>
+
+<style>
+  .btn {
+    --_bg: var(--color-amber-deep);
+    --_fg: #fff;
+    --_bd: transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-body);
+    font-size: var(--fs-cta);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--ls-cta);
+    text-transform: none; /* uppercase + heavy tracking reads aggressive (2.2) */
+    text-decoration: none;
+    line-height: 1;
+    padding: 0.95rem 1.5rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--_bd);
+    background: var(--_bg);
+    color: var(--_fg);
+    cursor: pointer;
+    box-shadow: 0 10px 22px rgba(156, 111, 14, 0.18);
+    transition: transform var(--dur-press) var(--ease-resolve),
+      background-color var(--dur-press) var(--ease-resolve),
+      border-color var(--dur-press) var(--ease-resolve);
+  }
+
+  .btn:active {
+    transform: scale(0.98); /* the only press feedback — restraint = confidence */
+  }
+
+  .btn__icon {
+    transition: transform var(--dur-press) var(--ease-resolve);
+  }
+  .btn:hover .btn__icon {
+    transform: translateX(2px);
+  }
+
+  /* primary — Deep Amber + white on light */
+  .btn--primary:hover {
+    background: #855e0b; /* a shade darker, stays > AA with white */
+  }
+
+  /* secondary — bordered slate, no fill */
+  .btn--secondary {
+    --_bg: transparent;
+    --_fg: var(--color-navy);
+    --_bd: var(--color-slate-30);
+    box-shadow: none;
+  }
+  .btn--secondary:hover {
+    --_bd: var(--color-slate);
+    background: var(--color-navy-08);
+  }
+
+  /* on-navy — Bright Amber fill + dark text (accessible on navy) */
+  .btn--on-navy {
+    --_bg: var(--color-amber);
+    --_fg: var(--color-text);
+    box-shadow: 0 10px 22px rgba(212, 160, 23, 0.2);
+  }
+  .btn--on-navy:hover {
+    background: #e0ac1f;
+  }
+</style>

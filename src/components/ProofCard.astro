@@ -1,0 +1,87 @@
+---
+/**
+ * ProofCard — the verified-result card shape (Layer 4.3). Frames a client win as
+ * "more data resolving," in the same visual language as the proof-stat pattern,
+ * rather than a generic testimonial. STRUCTURE is defined now; real pilot content
+ * drops in later. Pre-launch it renders as a reserved, clearly-empty slot — never
+ * a placeholder testimonial or a star rating (consumer/e-commerce signal).
+ *
+ * When `reserved` is true it shows the empty-but-intentional state. Otherwise it
+ * renders a real verified result passed in via props.
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  reserved?: boolean;
+  site?: string;
+  period?: string;
+  result?: string;
+}
+const { reserved = true, site, period, result } = Astro.props;
+---
+
+<div class={`proof ${reserved ? 'proof--reserved' : ''}`}>
+  {reserved ? (
+    <>
+      <span class="proof__tag">
+        <Icon name="shield" size={16} stroke={1.75} /> Verified result
+      </span>
+      <p class="proof__placeholder">
+        Reserved for pilot outcomes — added here once verified, in the same
+        format as a resolved measurement (e.g. site · period · result).
+      </p>
+    </>
+  ) : (
+    <>
+      <span class="proof__tag">
+        <Icon name="check" size={16} stroke={2} /> Verified result
+      </span>
+      <div class="proof__result">{result}</div>
+      <div class="proof__meta">{site}{period ? ` · ${period}` : ''}</div>
+    </>
+  )}
+</div>
+
+<style>
+  .proof {
+    background: var(--color-surface);
+    border: 1px solid var(--color-navy-08);
+    border-radius: var(--radius);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-1);
+  }
+  .proof--reserved {
+    background: transparent;
+    border-style: dashed;
+    border-color: var(--color-slate-30);
+    box-shadow: none;
+  }
+  .proof__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--fs-small);
+    font-weight: var(--weight-medium);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-amber-deep);
+  }
+  .proof__result {
+    font-family: var(--font-heading);
+    font-size: var(--fs-h3);
+    color: var(--color-navy);
+    margin-top: var(--space-4);
+    line-height: 1.25;
+  }
+  .proof__meta {
+    margin-top: var(--space-3);
+    font-size: var(--fs-small);
+    color: var(--color-slate);
+  }
+  .proof__placeholder {
+    margin-top: var(--space-4);
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--color-slate);
+  }
+</style>

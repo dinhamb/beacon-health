@@ -1,0 +1,235 @@
+---
+/**
+ * Navigation — two states, not one (Layer 3.4). This is the key decision.
+ *
+ * - gateway: both tracks named with EQUAL visual weight (mirrors the equal-weight
+ *   routing tiles below the fold). Contact is the one bordered/distinct item.
+ * - service: the flat link list is replaced by a small active-track badge +
+ *   one deliberately-secondary, smaller "Switch track" action. Orientation,
+ *   not a menu repeat.
+ *
+ * This is the ONE sticky element on the page (4.1) — never stacked with a sticky
+ * CTA bar.
+ */
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import TrackBadge from './TrackBadge.astro';
+import { SITE, TRACKS, TRACK_ORDER, withBase, type TrackId } from '../site.ts';
+
+interface Props {
+  variant?: 'gateway' | 'service';
+  active?: TrackId;
+}
+const { variant = 'gateway', active } = Astro.props;
+const current = active ? TRACKS[active] : null;
+const contactHref = `mailto:${SITE.email}`;
+const home = withBase('/');
+---
+
+<header class="nav" data-nav>
+  <div class="nav__inner grid-container">
+    <Logo background="dark" />
+
+    {variant === 'gateway' ? (
+      <>
+        <nav class="nav__links" aria-label="Service tracks">
+          {TRACK_ORDER.map((id) => (
+            <a class="nav__link" href={TRACKS[id].href}>{TRACKS[id].navLabel}</a>
+          ))}
+        </nav>
+        <div class="nav__end">
+          <a class="nav__contact" href={contactHref}>
+            <Icon name="mail" size={16} stroke={1.75} />
+            <span>Contact</span>
+          </a>
+        </div>
+      </>
+    ) : (
+      <div class="nav__service">
+        {current && <TrackBadge icon={current.icon} label={current.label} />}
+        <a class="nav__switch" href={home}>
+          <Icon name="arrow-right" size={15} stroke={1.75} class="nav__switch-icon" />
+          <span>Switch track</span>
+        </a>
+        <a class="nav__contact" href={contactHref}>
+          <Icon name="mail" size={16} stroke={1.75} />
+          <span>Contact</span>
+        </a>
+      </div>
+    )}
+
+    <!-- mobile disclosure -->
+    <button class="nav__toggle" data-nav-toggle aria-expanded="false" aria-controls="nav-mobile" aria-label="Menu">
+      <span class="nav__toggle-open"><Icon name="menu" size={24} /></span>
+      <span class="nav__toggle-close"><Icon name="close" size={24} /></span>
+    </button>
+  </div>
+
+  <!-- mobile panel -->
+  <div class="nav__mobile" id="nav-mobile" data-nav-mobile hidden>
+    <div class="grid-container">
+      <div class="col">
+        {variant === 'service' && current && (
+          <div class="nav__mobile-badge"><TrackBadge icon={current.icon} label={current.label} /></div>
+        )}
+        <a class="nav__mobile-link" href={TRACKS.imaging.href}>{TRACKS.imaging.navLabel}</a>
+        <a class="nav__mobile-link" href={TRACKS.cardiac.href}>{TRACKS.cardiac.navLabel}</a>
+        {variant === 'service' && <a class="nav__mobile-link" href={home}>All services</a>}
+        <a class="nav__mobile-link nav__mobile-link--contact" href={contactHref}>
+          <Icon name="mail" size={18} stroke={1.75} /> Contact
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  /* Navy header — matches the system-review look. */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--color-navy) 86%, transparent);
+    backdrop-filter: saturate(150%) blur(14px);
+    border-bottom: 1px solid var(--color-on-navy-line);
+  }
+  .nav__inner {
+    align-items: center;
+    min-height: 76px;
+    /* the 12-col grid isn't needed inside the bar — use a flex row */
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-5);
+  }
+
+  .nav__links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    margin-left: auto;
+  }
+  /* equal visual weight — neither track subordinate (3.4) */
+  .nav__link {
+    font-size: var(--fs-cta);
+    font-weight: var(--weight-medium);
+    color: #B5D4F4;
+    text-decoration: none;
+    padding: 0.5rem 0;
+    border-bottom: 2px solid transparent;
+    transition: border-color var(--dur-press) var(--ease-resolve),
+      color var(--dur-press) var(--ease-resolve);
+  }
+  .nav__link:hover { color: #fff; border-color: var(--color-amber); }
+  .nav__link[aria-current='page'] { color: #fff; border-color: var(--color-amber); }
+
+  .nav__end { display: flex; align-items: center; }
+
+  /* Contact — the one bordered/distinct nav item ("one accent, one job") */
+  .nav__contact {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--fs-cta);
+    font-weight: var(--weight-medium);
+    color: #fff;
+    text-decoration: none;
+    padding: 0.625rem 1rem;
+    border: 1px solid rgba(181, 212, 244, 0.32);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.04);
+    transition: border-color var(--dur-press) var(--ease-resolve),
+      background-color var(--dur-press) var(--ease-resolve);
+  }
+  .nav__contact:hover { border-color: #B5D4F4; background: rgba(255, 255, 255, 0.06); }
+
+  .nav__service {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-left: auto;
+  }
+  /* "Switch track" — deliberately secondary and smaller (3.4) */
+  .nav__switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: var(--fs-small);
+    color: var(--color-on-navy-dim);
+    text-decoration: none;
+  }
+  .nav__switch-icon { transform: rotate(180deg); opacity: 0.8; }
+  .nav__switch:hover { color: #fff; }
+
+  /* ---- mobile ---- */
+  .nav__toggle {
+    display: none;
+    background: none;
+    border: none;
+    padding: 0.375rem;
+    cursor: pointer;
+    color: #fff;
+  }
+  .nav__toggle-open,
+  .nav__toggle-close { display: inline-flex; }
+  .nav__toggle-close { display: none; }
+  .nav__toggle[aria-expanded='true'] .nav__toggle-open { display: none; }
+  .nav__toggle[aria-expanded='true'] .nav__toggle-close { display: inline-flex; }
+
+  .nav__mobile {
+    border-top: 1px solid var(--color-on-navy-line);
+    padding-block: var(--space-4) var(--space-6);
+    background: var(--color-navy);
+  }
+  .nav__mobile[hidden] { display: none; }
+  .nav__mobile-badge { margin-bottom: var(--space-4); }
+  .nav__mobile-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-4) 0;
+    font-size: 1.0625rem;
+    font-weight: var(--weight-medium);
+    color: #fff;
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-on-navy-line);
+  }
+  .nav__mobile-link--contact { color: var(--color-amber); border-bottom: none; }
+
+  @media (max-width: 880px) {
+    .nav__links,
+    .nav__end,
+    .nav__service { display: none; }
+    .nav__toggle { display: inline-flex; }
+  }
+</style>
+
+<script>
+  // Mobile menu disclosure. Tiny, per-route island — the only JS the nav ships.
+  function initNav() {
+    const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+    const panel = document.querySelector<HTMLElement>('[data-nav-mobile]');
+    if (!toggle || !panel) return;
+    // Guard against double-binding: this module runs at load AND on
+    // astro:page-load (which also fires on the initial load), which would
+    // otherwise attach two click listeners and cancel each other out.
+    if (toggle.dataset.bound) return;
+    toggle.dataset.bound = '1';
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      panel.hidden = !open;
+    };
+    toggle.addEventListener('click', () => {
+      setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+    // Close on escape / when a link is chosen.
+    panel.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    });
+  }
+  initNav();
+  // Re-bind after Astro view transitions swap the DOM.
+  document.addEventListener('astro:page-load', initNav);
+</script>

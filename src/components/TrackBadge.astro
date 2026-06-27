@@ -1,0 +1,39 @@
+---
+/**
+ * TrackBadge — orientation for a visitor already inside a track (Layer 3.4).
+ * Amber-tinted, with the track's fixed icon (2.4). This is NOT a menu repeat:
+ * someone who has chosen a track shouldn't see both options as equally undecided
+ * again. Sits on a light background, so it uses the amber-on-light tint rule.
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  icon: string;
+  label: string;
+}
+const { icon, label } = Astro.props;
+---
+
+<span class="track-badge">
+  <Icon name={icon as any} size={18} stroke={1.75} class="track-badge__icon" />
+  <span>{label}</span>
+</span>
+
+<style>
+  .track-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0.4375rem 0.75rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-amber-12);
+    border: 1px solid var(--color-amber-18);
+    font-family: var(--font-body);
+    font-size: var(--fs-small);
+    font-weight: var(--weight-medium);
+    color: var(--color-text); /* dark text on amber tint — accessible */
+    line-height: 1;
+  }
+  /* the icon itself can carry a touch more amber since it's a thin mark (2.1) */
+  .track-badge__icon { color: var(--color-amber-deep); }
+</style>

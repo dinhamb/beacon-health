@@ -1,0 +1,116 @@
+---
+/**
+ * Stat — a proof callout that counts up from 0 on first view (Layer 4.2). The
+ * one mainstream "premium SaaS" convention kept, because it dramatizes arriving
+ * at a verified value — the brand metaphor. Numbers build confidence faster than
+ * sentences (3.2), and they sit on the same baseline as the hero CTA.
+ *
+ * Tabular figures via the body default. Count-up honors reduced-motion (the
+ * script just sets the final value).
+ */
+interface Props {
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  label: string;
+  decimals?: number;
+  tone?: 'light' | 'navy';
+}
+const { value, prefix = '', suffix = '', label, decimals = 0, tone = 'light' } = Astro.props;
+const formatted = value.toLocaleString('en-US', {
+  minimumFractionDigits: decimals,
+  maximumFractionDigits: decimals,
+});
+---
+
+<div class={`stat stat--${tone}`}>
+  <div
+    class="stat__value"
+    data-countup
+    data-value={value}
+    data-decimals={decimals}
+    data-prefix={prefix}
+    data-suffix={suffix}
+  >
+    <span class="stat__num">{prefix}{formatted}{suffix}</span>
+  </div>
+  <div class="stat__label">{label}</div>
+</div>
+
+<style>
+  .stat__value {
+    font-family: var(--font-heading);
+    font-weight: var(--weight-heading);
+    font-size: clamp(2.25rem, 1.8rem + 1.8vw, 3rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--color-navy);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat--navy .stat__value { color: #fff; }
+  .stat--navy .stat__value .stat__accent { color: var(--color-amber); }
+
+  .stat__label {
+    margin-top: var(--space-3);
+    font-size: var(--fs-small);
+    line-height: 1.45;
+    color: var(--color-slate);
+    max-width: 22ch;
+  }
+  .stat--navy .stat__label { color: var(--color-on-navy-dim); }
+</style>
+
+<script>
+  function initCountUps() {
+    const els = document.querySelectorAll<HTMLElement>('[data-countup]:not([data-done])');
+    if (!els.length) return;
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const render = (el: HTMLElement, current: number) => {
+      const decimals = Number(el.dataset.decimals || 0);
+      const prefix = el.dataset.prefix || '';
+      const suffix = el.dataset.suffix || '';
+      const num = current.toLocaleString('en-US', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      });
+      const span = el.querySelector('.stat__num');
+      if (span) span.textContent = `${prefix}${num}${suffix}`;
+    };
+
+    const run = (el: HTMLElement) => {
+      el.dataset.done = 'true';
+      const target = Number(el.dataset.value || 0);
+      if (reduce || target === 0) {
+        render(el, target);
+        return;
+      }
+      const duration = 900;
+      const start = performance.now();
+      const ease = (t: number) => 1 - Math.pow(1 - t, 3); // easeOutCubic, no overshoot
+      const tick = (now: number) => {
+        const p = Math.min(1, (now - start) / duration);
+        render(el, target * ease(p));
+        if (p < 1) requestAnimationFrame(tick);
+        else render(el, target);
+      };
+      requestAnimationFrame(tick);
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            run(entry.target as HTMLElement);
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.4 }
+    );
+    els.forEach((el) => io.observe(el));
+  }
+  initCountUps();
+  document.addEventListener('astro:page-load', initCountUps);
+</script>

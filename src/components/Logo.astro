@@ -1,0 +1,88 @@
+---
+/**
+ * Logo lockup: Beacon mark + BEACON / DIAGNOSTICS wordmark.
+ * The mark is generated from the supplied Beacon Diagnostics PNG source art and
+ * reused by the favicon and the /qc-demo gate.
+ *
+ * `background` controls the on-light vs on-dark palette so the lockup reads on
+ * both the light page body and the navy nav/footer.
+ */
+interface Props {
+  background?: 'light' | 'dark';
+  href?: string | null;
+  size?: number;
+  class?: string;
+}
+import { withBase } from '../site.ts';
+const {
+  background = 'light',
+  href = withBase('/'),
+  size = 34,
+  class: className = '',
+} = Astro.props;
+
+const onDark = background === 'dark';
+const nameColor = onDark ? '#FFFFFF' : 'var(--color-navy)';
+const subColor = onDark ? 'var(--color-amber)' : '#C42E2E';
+const mark = withBase('/assets/beacon-mark.png');
+
+const Tag = href ? 'a' : 'div';
+---
+
+<Tag class={`logo ${className}`} href={href ?? undefined} aria-label="Beacon Diagnostics - home">
+  <img
+    class="logo__mark"
+    src={mark}
+    width={size}
+    height={size}
+    alt=""
+    aria-hidden="true"
+    loading="eager"
+    decoding="async"
+  />
+  <span class="logo__word">
+    <span class="logo__name">Beacon</span>
+    <span class="logo__sub">Diagnostics</span>
+  </span>
+</Tag>
+
+<style define:vars={{ nameColor, subColor }}>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    line-height: 1;
+  }
+  .logo__mark {
+    flex: none;
+    display: block;
+    object-fit: contain;
+  }
+  .logo__word {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.12rem;
+  }
+  .logo__name {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 1.0625rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--nameColor);
+    line-height: 1;
+  }
+  .logo__sub {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.625rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--subColor);
+    line-height: 1;
+  }
+  @media (max-width: 480px) {
+    .logo__sub { letter-spacing: 0.16em; }
+  }
+</style>

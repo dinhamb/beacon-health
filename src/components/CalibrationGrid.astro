@@ -1,0 +1,153 @@
+---
+/**
+ * CalibrationGrid — the brand motif (Layer 1 + 4.2): scattered readings
+ * resolving into a connected signal that locks inside a tolerance band.
+ * Matches the system-review visual language: a tolerance rectangle, an amber
+ * polyline of readings within it, faint scattered slate dots around, and a
+ * caption. SVG + CSS transitions only (no canvas/WebGL) — cheap on mobile.
+ *
+ * Resolves when scrolled into view (shared reveal observer toggles `.is-visible`):
+ * scattered amber dots converge to their in-tolerance positions, the connecting
+ * line draws in, the band fades up. Sub-400ms, eased, honors reduced-motion.
+ */
+interface Props {
+  tone?: 'light' | 'navy';
+  caption?: string;
+  class?: string;
+}
+const { tone = 'light', caption = 'within tolerance', class: className = '' } = Astro.props;
+
+// Deterministic scatter (mulberry32) so the build is stable.
+function prng(seed: number) {
+  return function () {
+    seed |= 0;
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const rand = prng(11);
+
+const W = 360;
+const H = 260;
+
+// The resolved (in-tolerance) reading — a gentle wave inside the band.
+const readings = [
+  { x: 90, y: 150 },
+  { x: 140, y: 163 },
+  { x: 190, y: 147 },
+  { x: 240, y: 165 },
+  { x: 285, y: 151 },
+].map((p, i) => ({
+  ...p,
+  dx: +((rand() * 2 - 1) * 26).toFixed(1),
+  dy: +((rand() * 2 - 1) * 60).toFixed(1),
+  delay: i * 55,
+}));
+const linePath = 'M' + readings.map((p) => `${p.x} ${p.y}`).join(' L ');
+
+// Faint scattered context dots (noise) outside the band.
+const noise = [
+  [50, 55], [98, 38], [255, 46], [314, 80],
+  [60, 228], [284, 224], [172, 34], [322, 196],
+].map(([x, y]) => ({ x, y }));
+---
+
+<div class={`cal cal--${tone} ${className}`} data-reveal aria-hidden="true">
+  <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} preserveAspectRatio="xMidYMid meet">
+    <!-- noise -->
+    <g class="noise">
+      {noise.map((n) => <circle cx={n.x} cy={n.y} r="2.5" />)}
+    </g>
+
+    <!-- tolerance band -->
+    <rect class="band" x="70" y="110" width="220" height="70" rx="6" />
+
+    <!-- connecting signal (draws in) -->
+    <path class="signal" d={linePath} pathLength="1" />
+
+    <!-- readings (converge in) -->
+    {readings.map((p) => (
+      <circle
+        class="mark"
+        cx={p.x}
+        cy={p.y}
+        r="3.2"
+        style={`--dx:${p.dx}px;--dy:${p.dy}px;--d:${p.delay}ms`}
+      />
+    ))}
+
+    {caption && <text class="caption" x="72" y="202">{caption}</text>}
+  </svg>
+</div>
+
+<style>
+  .cal { width: 100%; }
+  .cal svg { width: 100%; height: auto; }
+
+  .cal--light {
+    --_band: var(--color-slate-30);
+    --_amber: var(--color-amber-deep);
+    --_noise: var(--color-slate-20);
+    --_caption: var(--color-slate);
+  }
+  .cal--navy {
+    --_band: var(--color-amber);
+    --_amber: var(--color-amber);
+    --_noise: rgba(133, 183, 235, 0.55);
+    --_caption: #85B7EB;
+  }
+
+  .noise circle { fill: var(--_noise); opacity: 0.5; }
+
+  .band {
+    fill: none;
+    stroke: var(--_band);
+    stroke-width: 1;
+    opacity: 0;
+    transition: opacity var(--dur-reveal) var(--ease-resolve);
+  }
+  .cal--navy .band { opacity: 0; }
+
+  .signal {
+    fill: none;
+    stroke: var(--_amber);
+    stroke-width: 1.4;
+    opacity: 0.6;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset var(--dur-reveal) var(--ease-resolve) 120ms;
+  }
+
+  .mark {
+    fill: var(--_amber);
+    transform: translate(var(--dx), var(--dy));
+    opacity: 0.25;
+    transition: transform var(--dur-reveal) var(--ease-resolve),
+      opacity var(--dur-reveal) var(--ease-resolve);
+    transition-delay: var(--d);
+  }
+
+  .caption {
+    font-family: var(--font-body);
+    font-size: 11px;
+    fill: var(--_caption);
+    letter-spacing: 0.02em;
+    opacity: 0;
+    transition: opacity var(--dur-reveal) var(--ease-resolve) 200ms;
+  }
+
+  /* resolved */
+  .cal.is-visible .band { opacity: 0.9; }
+  .cal.is-visible .signal { stroke-dashoffset: 0; }
+  .cal.is-visible .mark { transform: translate(0, 0); opacity: 1; }
+  .cal.is-visible .caption { opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .band { opacity: 0.9; }
+    .signal { stroke-dashoffset: 0; }
+    .mark { transform: none; opacity: 1; transition: none; }
+    .caption { opacity: 1; }
+  }
+</style>

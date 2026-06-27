@@ -1,0 +1,85 @@
+/* =============================================================================
+   Beacon Diagnostics — Design Tokens
+   Layer 2 of the Brand Foundations. These are the exact values; nothing in the
+   system should hardcode a color, type size, or grid metric that isn't here.
+   ========================================================================== */
+
+:root {
+  /* ---- 2.1 Color system -------------------------------------------------- */
+  --color-navy:        #0B2447; /* Primary — trust anchor: headers, dark panels */
+  --color-slate:       #3D5A80; /* Secondary — UI chrome, secondary headings, borders */
+  --color-amber:       #D4A017; /* Bright Amber — thin marks/icons on light; anything on navy */
+  --color-amber-deep:  #9C6F0E; /* Deep Amber — filled CTAs/badges on light + white text */
+  --color-bg:          #F7F8FA; /* Page background — cool-tinted, low glare-fatigue */
+  --color-surface:     #FFFFFF; /* Cards / raised surfaces on the page background */
+  --color-text:        #1A1D29; /* Body copy — navy-tinted near-black, not pure black */
+
+  /* Derived, low-opacity utility tints (kept on-palette, never new hues). */
+  --color-navy-08:     rgba(11, 36, 71, 0.08);
+  --color-navy-12:     rgba(11, 36, 71, 0.12);
+  --color-slate-20:    rgba(61, 90, 128, 0.20);
+  --color-slate-30:    rgba(61, 90, 128, 0.30);
+  --color-amber-12:    rgba(212, 160, 23, 0.12);  /* amber-tinted chip on light */
+  --color-amber-18:    rgba(212, 160, 23, 0.18);
+  --color-on-navy-dim: rgba(255, 255, 255, 0.72); /* secondary text on navy */
+  --color-on-navy-line:rgba(255, 255, 255, 0.16); /* hairlines on navy */
+
+  /* ---- 2.2 Typography ---------------------------------------------------- */
+  --font-heading: 'Source Serif 4 Variable', Georgia, 'Times New Roman', serif;
+  --font-body:    'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Larger editorial scale for a more executive, premium consultancy feel. */
+  --fs-h1:    clamp(2.6rem, 1.9rem + 3vw, 5rem);
+  --fs-h2:    clamp(1.8rem, 1.35rem + 1.45vw, 2.9rem);
+  --fs-h3:    clamp(1.25rem, 1.05rem + 0.7vw, 1.7rem);
+  --fs-lead:  clamp(1.125rem, 1.02rem + 0.52vw, 1.45rem); /* sub-headlines */
+  --fs-body:  1rem;        /* 16px floor — never smaller for body copy */
+  --fs-small: 0.875rem;    /* 14px — captions/labels only, never paragraphs */
+  --fs-cta:   0.9375rem;   /* 15px */
+
+  --lh-tight: 1.08;        /* headings */
+  --lh-body:  1.65;        /* long technical reading sessions */
+  --ls-head:  -0.01em;
+  --ls-cta:   0.02em;
+
+  --weight-body:    400;
+  --weight-medium:  500;
+  --weight-heading: 600;
+
+  /* Comfortable reading measure — 50–75 char range on any display (2.2). */
+  --measure: 65ch;
+
+  /* ---- 2.3 Grid + spacing ----------------------------------------------- */
+  --grid-max:        1360px;
+  --grid-pad:        72px;  /* desktop side margin */
+  --grid-pad-mobile: 20px;  /* mobile side margin */
+  --gutter:          24px;  /* desktop gutter */
+  --gutter-mobile:   16px;  /* mobile gutter */
+
+  /* Spacing scale — used for vertical rhythm + section padding. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 7rem;
+  --space-10: 10rem;
+
+  --radius:    10px;   /* default card radius — restrained, not pill-soft */
+  --radius-sm: 6px;
+  --radius-lg: 14px;
+
+  /* ---- 4.2 Motion -------------------------------------------------------- */
+  --ease-resolve: cubic-bezier(0.4, 0, 0.2, 1); /* no overshoot, ever */
+  --dur-reveal:   360ms;  /* sub-400ms section reveal */
+  --dur-press:    120ms;
+  --dur-page:     180ms;  /* page cross-dissolve 150–200ms */
+
+  /* ---- Elevation --------------------------------------------------------- */
+  /* Soft, low shadows only — restraint is a competence signal. */
+  --shadow-1: 0 1px 2px rgba(11, 36, 71, 0.06), 0 1px 3px rgba(11, 36, 71, 0.05);
+  --shadow-2: 0 18px 45px rgba(11, 36, 71, 0.12), 0 4px 12px rgba(11, 36, 71, 0.08);
+}

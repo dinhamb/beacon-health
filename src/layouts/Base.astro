@@ -1,0 +1,116 @@
+---
+/**
+ * Base layout — <head>, self-hosted font preload (4.4), Astro view transitions
+ * for a brief page cross-dissolve (4.2), and the shared reveal-on-scroll
+ * observer. Nav + Footer chrome wrap every page.
+ */
+import { ClientRouter } from 'astro:transitions';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { SITE, withBase, type TrackId } from '../site.ts';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  navVariant?: 'gateway' | 'service';
+  activeTrack?: TrackId;
+}
+const {
+  title,
+  description,
+  navVariant = 'gateway',
+  activeTrack,
+} = Astro.props;
+const fullTitle = title.includes(SITE.name) ? title : `${title} — ${SITE.name}`;
+
+// Asset URLs must respect the base path (root locally, /Beacon-Diagnostics/ on
+// Pages). @font-face lives here rather than in global.css because CSS url()
+// can't read import.meta.env.BASE_URL.
+const fontInter = withBase('/fonts/inter-latin-wght-normal.woff2');
+const fontSerif = withBase('/fonts/source-serif-4-latin-wght-normal.woff2');
+const fontSerifItalic = withBase('/fonts/source-serif-4-latin-wght-italic.woff2');
+const favicon = withBase('/favicon.png');
+const favicon32 = withBase('/assets/favicon-32.png');
+const appleTouchIcon = withBase('/assets/apple-touch-icon.png');
+
+const unicodeLatin =
+  'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD';
+
+// font-display: optional — no visible re-flow (preferred over swap in 4.4).
+const fontFaceCss = `
+@font-face{font-family:'Inter Variable';font-style:normal;font-display:optional;font-weight:100 900;src:url('${fontInter}') format('woff2-variations');unicode-range:${unicodeLatin};}
+@font-face{font-family:'Source Serif 4 Variable';font-style:normal;font-display:optional;font-weight:200 900;src:url('${fontSerif}') format('woff2-variations');unicode-range:${unicodeLatin};}
+@font-face{font-family:'Source Serif 4 Variable';font-style:italic;font-display:optional;font-weight:200 900;src:url('${fontSerifItalic}') format('woff2-variations');unicode-range:${unicodeLatin};}
+`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0B2447" />
+    <link rel="icon" href={favicon} type="image/png" />
+    <link rel="icon" href={favicon32} sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href={appleTouchIcon} />
+
+    <!-- Self-hosted fonts, base-path aware (see frontmatter) -->
+    <style is:inline set:html={fontFaceCss}></style>
+
+    <!-- Preload only the above-the-fold weights; variable files cut request count (4.4) -->
+    <link rel="preload" href={fontInter} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={fontSerif} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+
+    <ClientRouter />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Nav variant={navVariant} active={activeTrack} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      // Shared reveal-on-scroll observer (Layer 4.2). Progressive enhancement:
+      // adds `reveal-ready` so the resting (hidden) state only applies with JS,
+      // then reveals elements as they enter view. Honors reduced-motion.
+      function initReveal() {
+        const els = document.querySelectorAll<HTMLElement>('[data-reveal]:not([data-revealed])');
+        if (!els.length) return;
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        document.documentElement.classList.add('reveal-ready');
+
+        if (reduce) {
+          els.forEach((el) => {
+            el.classList.add('is-visible');
+            el.dataset.revealed = 'true';
+          });
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                (entry.target as HTMLElement).dataset.revealed = 'true';
+                io.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.18, rootMargin: '0px 0px -8% 0px' }
+        );
+        els.forEach((el) => io.observe(el));
+      }
+      initReveal();
+      document.addEventListener('astro:page-load', initReveal);
+    </script>
+  </body>
+</html>
