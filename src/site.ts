@@ -29,16 +29,16 @@ export const TRACKS: Record<
 > = {
   imaging: {
     id: 'imaging',
-    label: 'Imaging & equipment QC',
-    navLabel: 'Imaging & equipment QC',
+    label: 'Imaging QC & Compliance',
+    navLabel: 'Imaging QC & Compliance',
     href: withBase('/imaging-qc'),
     icon: 'ruler', // calibration — the imaging/QC track's fixed icon (2.4)
     blurb: 'Mammography, MRI, and multi-site compliance — calibration and QC you can stand behind.',
   },
   cardiac: {
     id: 'cardiac',
-    label: 'Remote diagnostics',
-    navLabel: 'Remote diagnostics',
+    label: 'Cardiac Services',
+    navLabel: 'Cardiac Services',
     href: withBase('/cardiac'),
     icon: 'monitor', // broadcast/signal — NOT a heartbeat glyph (Layer 1)
     blurb: 'Holter monitoring, CIED support, and remote monitoring — clarity quicker, refer smarter.',

@@ -1,382 +1,63 @@
 ---
-/**
- * Service / track page — Imaging & equipment QC (Layer 3.2). Builds specific,
- * detailed confidence with a known buyer (radiology director, medical physicist).
- * Asymmetric rhythm, every span on a grid boundary (2.3):
- *   1. Hero            content 1–7 / visual 8–12
- *   2. Proof           stats 1–5 / narrative 6–12   (the reversal makes rhythm)
- *   3. Methodology     detail 1–8 / sidebar 9–12    (the one earned sidebar)
- *   3b. Sample QC log  dense table -> stacked cards on mobile (4.1)
- *   4. Closing CTA     centered 2–11                (calm, resolved close)
- *
- * Content claims CAPABILITY, never scale/volume (3.6 guardrail, applied here too).
- */
 import Base from '../layouts/Base.astro';
 import Button from '../components/Button.astro';
-import Stat from '../components/Stat.astro';
-import Icon from '../components/Icon.astro';
-import ProofCard from '../components/ProofCard.astro';
-import CalibrationGrid from '../components/CalibrationGrid.astro';
-import { SITE, TRACKS, withBase } from '../site.ts';
+import { SITE } from '../site.ts';
 
 const contactHref = `mailto:${SITE.email}`;
-const heroPhoto = withBase('/assets/diagnostics-workstation-photo-1200.jpg');
-
-// Sample QC log — illustrative of the data shape, not real site data.
-const log = [
-  { date: '2026-06-22', modality: 'Mammography', metric: 'Phantom CNR', value: '4.8', tol: '≥ 4.0', status: 'pass' },
-  { date: '2026-06-22', modality: 'Mammography', metric: 'AEC reproducibility', value: '3.1%', tol: '≤ 5%', status: 'pass' },
-  { date: '2026-06-21', modality: 'MRI', metric: 'SNR (head coil)', value: '182', tol: '≥ 150', status: 'pass' },
-  { date: '2026-06-21', modality: 'MRI', metric: 'Geometric distortion', value: '1.9 mm', tol: '≤ 2 mm', status: 'watch' },
-  { date: '2026-06-20', modality: 'MRI', metric: 'Center frequency drift', value: '11 Hz', tol: '≤ 25 Hz', status: 'pass' },
-];
-const statusMeta = {
-  pass: { icon: 'check', label: 'In tolerance' },
-  watch: { icon: 'alert-triangle', label: 'Flagged' },
-} as const;
 ---
 
 <Base
-  title="Imaging & equipment QC"
-  description="Calibration and quality assurance for mammography, MRI, and multi-site imaging programs — every reading checked against documented tolerance."
+  title="Imaging QC & Compliance"
+  description="Medical physics and quality assurance services supporting commissioning, compliance testing, quality control and education."
   navVariant="service"
   activeTrack="imaging"
 >
-  <!-- 1. HERO — navy panel; content 1–7, visual 8–12 -->
-  <section class="section hero panel-navy">
-    <div class="grid-container hero__grid">
-      <div class="col hero__content" style="--from:1;--to:8" data-reveal>
-        <p class="eyebrow"><Icon name={TRACKS.imaging.icon} size={16} stroke={1.75} /> Imaging &amp; equipment QC</p>
-        <h1>Clarity you can act on, every time.</h1>
-        <p class="hero__sub measure">
-          Calibration and quality assurance for
-          <strong>mammography</strong>, <strong>MRI</strong>, and
-          <strong>multi-site compliance</strong> — each reading measured against a
-          documented tolerance, each result one you can sign your name to.
-        </p>
-
-        <div class="hero__actions">
-          <Button href={contactHref} variant="primary">Talk to us about your program</Button>
-          <!-- proof stats sit on the CTA baseline — numbers build confidence faster (3.2) -->
-          <div class="hero__stats">
-            <Stat value={100} suffix="%" label="of readings checked against a documented tolerance" tone="navy" />
-            <Stat value={0} label="tolerance breaches passed through unflagged" tone="navy" />
-          </div>
-        </div>
-      </div>
-
-      <div class="col hero__visual" style="--from:8;--to:13">
-        <div class="hero__visual-panel">
-          <img src={heroPhoto} alt="Radiology diagnostic workstation and calibrated imaging technology" loading="eager" decoding="async" />
-          <div class="hero__visual-motif" aria-hidden="true">
-            <CalibrationGrid tone="navy" caption="within tolerance" />
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 2. PROOF / CREDIBILITY — flips: stats 1–5, narrative 6–12 -->
-  <section class="section proof-sec">
+  <section class="service-simple">
     <div class="grid-container">
-      <div class="col proof-sec__aside" style="--from:1;--to:6" data-reveal>
-        <ProofCard reserved />
-        <ProofCard reserved />
-      </div>
-      <div class="col proof-sec__body" style="--from:6;--to:13" data-reveal>
-        <p class="eyebrow">Why programs move to us</p>
-        <h2>Audited rigor, without the bloat.</h2>
-        <p class="measure proof-sec__lead">
-          QC is only as good as the discipline behind it. We build on the
-          protocols you already answer to — ACR and AAPM guidance, state and
-          manufacturer requirements — and make the evidence trail effortless to
-          produce when an inspector, or your own director, asks for it.
+      <div class="col service-simple__inner" style="--from:3;--to:11" data-reveal>
+        <h1>Imaging QC &amp; Compliance</h1>
+        <p>
+          Medical physics and quality assurance services supporting commissioning,
+          compliance testing, quality control and education.
         </p>
-        <ul class="checklist">
-          <li><Icon name="check" size={20} stroke={2} /> Tolerance-band thinking on every measurement, not pass/fail guesswork</li>
-          <li><Icon name="check" size={20} stroke={2} /> One calibrated source of truth across every site you run</li>
-          <li><Icon name="check" size={20} stroke={2} /> Findings written to be acted on — flagged early, never buried</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- 3. METHODOLOGY — detail 1–8, persistent sidebar 9–12 -->
-  <section class="section method panel-navy">
-    <div class="grid-container">
-      <div class="col method__body" style="--from:1;--to:9" data-reveal>
-        <p class="eyebrow">How it works</p>
-        <h2>A measurement, resolved into a finding.</h2>
-        <ol class="method__steps">
-          <li>
-            <span class="method__step-n">01</span>
-            <div>
-              <h3>Establish tolerance</h3>
-              <p class="measure">Every modality gets documented limits — drawn from ACR/AAPM protocols and your manufacturer specs — so "passing" means something specific, not subjective.</p>
-            </div>
-          </li>
-          <li>
-            <span class="method__step-n">02</span>
-            <div>
-              <h3>Capture &amp; calibrate</h3>
-              <p class="measure">Readings are taken on a consistent cadence and checked against those limits — the noisy stream reduced to a clear in-/out-of-tolerance signal.</p>
-            </div>
-          </li>
-          <li>
-            <span class="method__step-n">03</span>
-            <div>
-              <h3>Flag &amp; report</h3>
-              <p class="measure">Anything drifting toward a limit is flagged before it breaches. The report is the evidence trail — ready for inspection the day it's needed.</p>
-            </div>
-          </li>
-        </ol>
-      </div>
-
-      <!-- the one section where a real sidebar is earned (3.2) -->
-      <aside class="col method__side" style="--from:9;--to:13" data-reveal>
-        <div class="sidecard">
-          <h3 class="sidecard__h"><Icon name="shield" size={18} stroke={1.75} /> Built on</h3>
-          <ul class="sidecard__list">
-            <li>ACR accreditation protocols</li>
-            <li>AAPM QC guidance</li>
-            <li>State &amp; manufacturer requirements</li>
-          </ul>
-        </div>
-        <div class="sidecard">
-          <h3 class="sidecard__h"><Icon name="file-text" size={18} stroke={1.75} /> What you get</h3>
-          <ul class="sidecard__list">
-            <li>Documented tolerance per modality</li>
-            <li>Inspection-ready evidence trail</li>
-            <li>Early-flag, multi-site overview</li>
-          </ul>
-        </div>
-        <div class="sidecard sidecard--cta">
-          <p>Have a program to bring under one roof?</p>
-          <Button href={contactHref} variant="primary">Start the conversation</Button>
-        </div>
-      </aside>
-    </div>
-  </section>
-
-  <!-- 3b. SAMPLE QC LOG — dense; collapses to stacked cards on mobile (4.1) -->
-  <section class="section--tight log-sec">
-    <div class="grid-container">
-      <div class="col" style="--from:1;--to:8" data-reveal>
-        <p class="eyebrow">What a log looks like</p>
-        <h2>The evidence trail, legible under pressure.</h2>
-        <p class="measure log-sec__lead">
-          Illustrative of the data shape, not a live feed. On a phone between
-          cases, each row becomes a card showing only what's decision-relevant.
-        </p>
-      </div>
-      <div class="col" style="--from:1;--to:13" data-reveal>
-        <table class="qclog">
-          <thead>
-            <tr>
-              <th scope="col">Date</th>
-              <th scope="col">Modality</th>
-              <th scope="col">Measurement</th>
-              <th scope="col">Reading</th>
-              <th scope="col">Tolerance</th>
-              <th scope="col">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {log.map((row) => (
-              <tr>
-                <td data-label="Date">{row.date}</td>
-                <td data-label="Modality">{row.modality}</td>
-                <td data-label="Measurement">{row.metric}</td>
-                <td data-label="Reading" class="qclog__num">{row.value}</td>
-                <td data-label="Tolerance" class="qclog__num">{row.tol}</td>
-                <td data-label="Status">
-                  <span class={`pill pill--${row.status}`}>
-                    <Icon name={statusMeta[row.status].icon} size={15} stroke={2} />
-                    {statusMeta[row.status].label}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- 4. CLOSING CTA — centered 2–11, calm resolved close -->
-  <section class="section close">
-    <div class="grid-container">
-      <div class="col close__inner" style="--from:2;--to:12" data-reveal>
-        <h2>Bring your QC program under one calibrated roof.</h2>
-        <p class="close__sub measure">
-          Imaging or equipment, one site or many — let's talk about what
-          "passing" should mean for your program.
-        </p>
-        <Button href={contactHref} variant="primary">Talk to us</Button>
+        <Button href={contactHref} variant="primary">Contact Beacon Diagnostics</Button>
       </div>
     </div>
   </section>
 </Base>
 
 <style>
-  /* ---- hero (navy panel) ---- */
-  .hero { padding-top: var(--space-8); padding-bottom: var(--space-9); }
-  .hero__grid { align-items: center; row-gap: var(--space-7); }
-  .hero__sub { margin-top: var(--space-5); font-size: var(--fs-lead); color: #B5D4F4; }
-  .hero__visual-panel {
-    position: relative;
-    overflow: hidden;
-    background: #082038;
-    border: 1px solid var(--color-on-navy-line);
-    border-radius: var(--radius-lg);
-    height: 100%;
-    min-height: 440px;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24);
-  }
-  .hero__visual-panel img {
-    width: 100%;
-    height: 100%;
-    min-height: inherit;
-    object-fit: cover;
-    opacity: 0.74;
-  }
-  .hero__visual-panel::after {
-    content: '';
-    position: absolute;
-    inset: 0;
+  .service-simple {
+    min-height: calc(100vh - 76px);
+    display: grid;
+    align-items: center;
+    padding-block: clamp(5rem, 10vw, 9rem);
     background:
-      radial-gradient(circle at 80% 12%, rgba(212, 160, 23, 0.2), transparent 16rem),
-      linear-gradient(180deg, rgba(11, 36, 71, 0.08), rgba(11, 36, 71, 0.62));
+      radial-gradient(circle at 50% 10%, rgba(181, 212, 244, 0.32), transparent 30rem),
+      linear-gradient(180deg, #f8fbfd 0%, #eef5fb 100%);
   }
-  .hero__visual-motif {
-    position: absolute;
-    right: var(--space-5);
-    bottom: var(--space-5);
-    width: min(70%, 360px);
-    opacity: 0.72;
-    z-index: 1;
-  }
-  .hero__actions { margin-top: var(--space-7); display: flex; flex-direction: column; gap: var(--space-6); }
-  .hero__stats {
+  .service-simple__inner {
+    text-align: center;
     display: flex;
-    gap: var(--space-8);
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
   }
-  .hero__visual { align-self: center; }
-
-  /* ---- proof ---- */
-  .proof-sec__aside { display: grid; gap: var(--gutter); align-content: start; }
-  .proof-sec__lead { margin-top: var(--space-4); font-size: var(--fs-lead); color: var(--color-slate); }
-  .checklist { list-style: none; padding: 0; margin-top: var(--space-6); display: grid; gap: var(--space-4); }
-  .checklist li { display: flex; gap: var(--space-3); align-items: flex-start; max-width: 60ch; }
-  .checklist :global(.icon) { color: var(--color-amber-deep); margin-top: 2px; }
-
-  /* ---- methodology (navy) ---- */
-  .method__body { padding-right: var(--space-6); }
-  .method__steps { list-style: none; padding: 0; margin-top: var(--space-6); display: grid; gap: var(--space-6); }
-  .method__steps li { display: flex; gap: var(--space-5); }
-  .method__step-n {
-    font-family: var(--font-heading);
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--color-amber);
-    flex: none;
-    width: 2.5rem;
-    padding-top: 0.1rem;
+  .service-simple h1 {
+    max-width: 13ch;
   }
-  .method__steps h3 { color: #fff; margin-bottom: var(--space-2); }
-  .method__steps p { color: var(--color-on-navy-dim); }
-
-  .method__side { display: grid; gap: var(--gutter); align-content: start; }
-  .sidecard {
-    border: 1px solid var(--color-on-navy-line);
-    border-radius: var(--radius);
-    padding: var(--space-5);
+  .service-simple p {
+    max-width: 62ch;
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-7);
+    color: var(--color-slate);
+    font-size: var(--fs-lead);
+    line-height: 1.55;
   }
-  .sidecard__h {
-    display: flex; align-items: center; gap: var(--space-2);
-    font-family: var(--font-body);
-    font-size: var(--fs-small);
-    font-weight: var(--weight-medium);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--color-amber);
-    margin-bottom: var(--space-3);
-  }
-  .sidecard__list { list-style: none; padding: 0; display: grid; gap: var(--space-2); color: var(--color-on-navy-dim); font-size: var(--fs-cta); }
-  .sidecard--cta p { color: #fff; margin-bottom: var(--space-4); }
-
-  /* ---- QC log table ---- */
-  .log-sec__lead { margin: var(--space-3) 0 var(--space-6); color: var(--color-slate); }
-  .qclog {
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--color-surface);
-    border: 1px solid var(--color-navy-08);
-    border-radius: var(--radius);
-    overflow: hidden;
-    font-size: var(--fs-cta);
-  }
-  .qclog thead th {
-    text-align: left;
-    background: var(--color-navy);
-    color: #fff;
-    font-weight: var(--weight-medium);
-    font-size: var(--fs-small);
-    letter-spacing: 0.02em;
-    padding: var(--space-3) var(--space-4);
-  }
-  .qclog td { padding: var(--space-4); border-top: 1px solid var(--color-navy-08); color: var(--color-text); }
-  .qclog__num { font-variant-numeric: tabular-nums; }
-
-  .pill {
-    display: inline-flex; align-items: center; gap: 0.375rem;
-    padding: 0.25rem 0.625rem;
-    border-radius: 999px;
-    font-size: var(--fs-small);
-    font-weight: var(--weight-medium);
-    line-height: 1;
-  }
-  .pill--pass { background: rgba(61,90,128,0.12); color: var(--color-slate); }
-  /* "Flagged" uses amber as the "this matters" accent (2.1), dark text on light tint */
-  .pill--watch { background: var(--color-amber-12); color: var(--color-amber-deep); }
-
-  /* ---- closing ---- */
-  .close { text-align: center; padding-block: var(--space-9); }
-  .close__inner { display: flex; flex-direction: column; align-items: center; gap: var(--space-5); }
-  .close__sub { font-size: var(--fs-lead); color: var(--color-slate); }
 
   @media (max-width: 880px) {
-    .method__body { padding-right: 0; }
-    .hero__stats { gap: var(--space-6); }
-  }
-
-  /* Data tables become stacked label-value cards below ~640px (4.1) */
-  @media (max-width: 640px) {
-    .qclog { border: none; background: transparent; }
-    .qclog thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-    .qclog tr {
-      display: block;
-      background: var(--color-surface);
-      border: 1px solid var(--color-navy-08);
-      border-radius: var(--radius);
-      padding: var(--space-2) var(--space-4);
-      margin-bottom: var(--space-4);
-      box-shadow: var(--shadow-1);
-    }
-    .qclog td {
-      display: flex;
-      justify-content: space-between;
-      gap: var(--space-4);
-      padding: var(--space-3) 0;
-      border-top: 1px solid var(--color-navy-08);
-    }
-    .qclog tr td:first-child { border-top: none; }
-    .qclog td::before {
-      content: attr(data-label);
-      color: var(--color-slate);
-      font-weight: var(--weight-medium);
-      font-size: var(--fs-small);
+    .service-simple__inner {
+      text-align: left;
+      align-items: flex-start;
     }
   }
 </style>

@@ -1,10 +1,6 @@
 ---
 /**
- * Footer — four columns matching the grid's quarter-divisions (Layer 3.4 / 2.3):
- *   1. brand statement   2. services   3. company / contact
- *   4. trust-proof slot — RESERVED ON PURPOSE: present and visibly empty
- *      pre-launch rather than absent, so the first pilot-site mention has a
- *      home that's already decided (see 4.3). No placeholder testimonials.
+ * Footer — restrained brand, services, and contact chrome.
  */
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
@@ -14,16 +10,10 @@ const year = new Date().getFullYear();
 
 <footer class="footer panel-navy" id="contact">
   <div class="grid-container footer__grid">
-    <!-- 1. brand statement -->
     <div class="footer__col footer__brand">
       <Logo background="dark" href={null} />
-      <p class="footer__statement measure">
-        Turning a continuous, noisy stream of data into a discrete, trustworthy,
-        actionable finding.
-      </p>
     </div>
 
-    <!-- 2. services -->
     <nav class="footer__col" aria-label="Services">
       <h2 class="footer__heading">Services</h2>
       <ul class="footer__list">
@@ -33,7 +23,6 @@ const year = new Date().getFullYear();
       </ul>
     </nav>
 
-    <!-- 3. company / contact -->
     <div class="footer__col">
       <h2 class="footer__heading">Contact</h2>
       <ul class="footer__list">
@@ -49,20 +38,11 @@ const year = new Date().getFullYear();
         </li>
       </ul>
     </div>
-
-    <!-- 4. trust-proof slot — reserved, visibly empty pre-launch (4.3) -->
-    <div class="footer__col footer__trust">
-      <h2 class="footer__heading">Proven on site</h2>
-      <p class="footer__reserved">
-        Pilot results are added here as they’re verified.
-      </p>
-    </div>
   </div>
 
   <div class="grid-container footer__base">
     <div class="col footer__baseinner">
       <span>&copy; {year} {SITE.name}</span>
-      <span class="footer__capability">Capabilities offered; volume claims made only where verified.</span>
     </div>
   </div>
 </footer>
@@ -78,14 +58,6 @@ const year = new Date().getFullYear();
   }
   .footer__col { grid-column: span 3; }
   .footer__brand { grid-column: span 3; }
-
-  .footer__statement {
-    margin-top: var(--space-4);
-    color: var(--color-on-navy-dim);
-    font-size: var(--fs-small);
-    line-height: 1.6;
-    max-width: 32ch;
-  }
 
   .footer__heading {
     font-family: var(--font-body);
@@ -105,18 +77,6 @@ const year = new Date().getFullYear();
   }
   .footer__link:hover { color: #fff; }
   .footer__link--icon { display: inline-flex; align-items: center; gap: var(--space-2); }
-
-  /* the reserved slot reads intentional, not broken */
-  .footer__trust {
-    border: 1px dashed var(--color-on-navy-line);
-    border-radius: var(--radius);
-    padding: var(--space-5);
-  }
-  .footer__reserved {
-    color: var(--color-on-navy-dim);
-    font-size: var(--fs-small);
-    line-height: 1.55;
-  }
 
   .footer__base {
     border-top: 1px solid var(--color-on-navy-line);

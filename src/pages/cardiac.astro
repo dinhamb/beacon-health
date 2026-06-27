@@ -1,236 +1,122 @@
 ---
-/**
- * Service / track page — Remote (cardiac) diagnostics (Layer 3.6). v1 is
- * cardiac-only; no physics/QC here (that lives in the imaging track).
- *
- * Deliberately minimal by design: no step-by-step workflow, billing, or fitting
- * logistics — that qualifies a lead in conversation, not on the page. So the
- * positioning line is load-bearing, not filler, and is treated as such.
- *
- * Same asymmetric anatomy as 3.2 (hero 1–7/8–12, proof reversal, navy panels for
- * density alternation, centered close). Claims CAPABILITY, never scale/volume.
- */
 import Base from '../layouts/Base.astro';
 import Button from '../components/Button.astro';
-import Icon from '../components/Icon.astro';
-import ProofCard from '../components/ProofCard.astro';
-import CalibrationGrid from '../components/CalibrationGrid.astro';
-import { SITE, TRACKS, withBase } from '../site.ts';
+import { SITE } from '../site.ts';
 
 const contactHref = `mailto:${SITE.email}`;
-const heroPhoto = withBase('/assets/diagnostics-hero-photo-1440.jpg');
-
-// Services named with equal weight (3.6) — no implied hierarchy.
 const services = [
-  { icon: 'monitor', name: 'Holter monitoring', line: 'Ambulatory rhythm capture, read and resolved into a clear finding.' },
-  { icon: 'chip', name: 'CIED support', line: 'Device-clinic support for pacemakers and implanted cardiac devices.' },
-  { icon: 'target', name: 'Remote monitoring', line: 'Ongoing vigilance between visits — signal watched, not just stored.' },
+  'CIED support',
+  'Remote monitoring',
+  'Rhythm analysis (Holter, ECG and event monitoring)',
 ];
 ---
 
 <Base
-  title="Remote diagnostics"
-  description="Holter monitoring, CIED support, and remote monitoring — get clarity quicker, refer smarter. Extend what a referring clinic can already do."
+  title="Cardiac Services"
+  description="CIED support, remote monitoring, and rhythm analysis services led by Braden Dinham, Cardiac Physiologist."
   navVariant="service"
   activeTrack="cardiac"
 >
-  <!-- 1. HERO — navy panel; content 1–7, visual 8–12 -->
-  <section class="section hero panel-navy">
-    <div class="grid-container hero__grid">
-      <div class="col hero__content" style="--from:1;--to:8" data-reveal>
-        <p class="eyebrow"><Icon name={TRACKS.cardiac.icon} size={16} stroke={1.75} /> Remote diagnostics</p>
-        <h1>Get clarity quicker, refer smarter.</h1>
-        <p class="hero__sub measure">
-          Extend what a referring GP or clinic can already do — and when a referral
-          is still the right call, send it onward with real diagnostic information
-          attached, not a question mark.
-        </p>
-        <p class="hero__services">
-          <strong>Holter monitoring</strong>
-          <span aria-hidden="true">·</span>
-          <strong>CIED support</strong>
-          <span aria-hidden="true">·</span>
-          <strong>Remote monitoring</strong>
-        </p>
-        <p class="hero__cred">Co-chair and board director, International Board of Heart Rhythm Examiners</p>
-        <div class="hero__actions">
-          <Button href={contactHref} variant="primary">Get in touch</Button>
-        </div>
-      </div>
-
-      <div class="col hero__visual" style="--from:8;--to:13">
-        <div class="hero__visual-panel">
-          <img src={heroPhoto} alt="Specialist remote diagnostics technology workstation" loading="eager" decoding="async" />
-          <div class="hero__visual-motif" aria-hidden="true">
-            <CalibrationGrid tone="navy" caption="clarity, resolved" />
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 2. SERVICES — three tracks, equal weight (navy panel, density change) -->
-  <section class="section services panel-navy">
+  <section class="cardiac-simple">
     <div class="grid-container">
-      <div class="col" style="--from:1;--to:13" data-reveal>
-        <p class="eyebrow">What we offer</p>
-        <h2 class="services__h">Three services. One clear finding at the end of each.</h2>
+      <div class="col cardiac-simple__header" style="--from:2;--to:12" data-reveal>
+        <h1>Cardiac Services</h1>
       </div>
     </div>
-    <div class="grid-container services__grid">
-      {services.map((s, i) => (
-        <div class="col" style={`--from:${1 + i * 4};--to:${5 + i * 4}`} data-reveal>
-          <div class="svc">
-            <span class="svc__icon" aria-hidden="true"><Icon name={s.icon as any} size={24} stroke={1.5} /></span>
-            <h3 class="svc__name">{s.name}</h3>
-            <p class="svc__line">{s.line}</p>
-          </div>
-        </div>
-      ))}
-    </div>
-  </section>
 
-  <!-- 3. CREDIBILITY — flips: credential 1–5, narrative 6–12 -->
-  <section class="section cred">
-    <div class="grid-container">
-      <div class="col cred__aside" style="--from:1;--to:6" data-reveal>
-        <ProofCard reserved />
-        <ProofCard reserved />
-      </div>
-      <div class="col cred__body" style="--from:6;--to:13" data-reveal>
-        <p class="eyebrow">The shift</p>
-        <h2>From “outsource the workload” to “extend the clinic.”</h2>
-        <p class="measure cred__lead">
-          The value isn't taking work off your desk — it's giving a referring
-          clinician more of the picture, sooner. Clearer information up front means
-          smarter referrals: the right patient sent onward at the right moment,
-          with the data that makes the next step obvious.
-        </p>
-        <p class="measure cred__note">
-          Deliberately brief. The specifics — fitting, workflow, sign-off — are a
-          conversation, not a web page. Tell us what you're seeing and we'll take
-          it from there.
-        </p>
-      </div>
-    </div>
-  </section>
+    <div class="grid-container cardiac-simple__grid">
+      <section class="col cardiac-simple__section" style="--from:2;--to:7" data-reveal>
+        <h2>What We Offer</h2>
+        <ul>
+          {services.map((service) => <li>{service}</li>)}
+        </ul>
+      </section>
 
-  <!-- 4. CLOSING CTA — centered 2–11 -->
-  <section class="section close panel-navy">
-    <div class="grid-container">
-      <div class="col close__inner" style="--from:2;--to:12" data-reveal>
-        <h2>Clarity quicker. Referrals smarter.</h2>
-        <p class="close__sub measure">
-          If that's the kind of help your patients could use, let's talk.
+      <section class="col cardiac-simple__section" style="--from:7;--to:12" data-reveal>
+        <h2>Clinical Leadership</h2>
+        <p>Lead by Braden Dinham, Cardiac Physiologist.</p>
+        <p>
+          Braden serves on the Board of Directors and co-chairs the CDRMS
+          examination committee for the International Board of Heart Rhythm
+          Examiners.
         </p>
-        <Button href={contactHref} variant="primary">Get in touch</Button>
+      </section>
+    </div>
+
+    <div class="grid-container">
+      <div class="col cardiac-simple__cta" style="--from:2;--to:12" data-reveal>
+        <Button href={contactHref} variant="primary">Contact Beacon Diagnostics</Button>
       </div>
     </div>
   </section>
 </Base>
 
 <style>
-  /* ---- hero (navy panel) ---- */
-  .hero { padding-top: var(--space-8); padding-bottom: var(--space-9); }
-  .hero__grid { align-items: center; row-gap: var(--space-7); }
-  .hero__sub { margin-top: var(--space-5); font-size: var(--fs-lead); color: #B5D4F4; }
-  .hero__services {
-    margin-top: var(--space-5);
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    align-items: center;
-    color: #fff;
-    font-size: 1.0625rem;
-  }
-  .hero__services span { color: var(--color-amber); }
-  .hero__cred {
-    margin-top: var(--space-4);
-    font-size: var(--fs-small);
-    color: #5F8AC2;
-    max-width: 42ch;
-  }
-  .hero__actions { margin-top: var(--space-6); }
-  .hero__visual { align-self: stretch; }
-  .hero__visual-panel {
-    position: relative;
-    overflow: hidden;
-    background: #082038;
-    border: 1px solid var(--color-on-navy-line);
-    border-radius: var(--radius-lg);
-    height: 100%;
-    min-height: 440px;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24);
-  }
-  .hero__visual-panel img {
-    width: 100%;
-    height: 100%;
-    min-height: inherit;
-    object-fit: cover;
-    opacity: 0.74;
-  }
-  .hero__visual-panel::after {
-    content: '';
-    position: absolute;
-    inset: 0;
+  .cardiac-simple {
+    min-height: calc(100vh - 76px);
+    padding-block: clamp(5rem, 10vw, 9rem);
     background:
-      radial-gradient(circle at 82% 12%, rgba(212, 160, 23, 0.2), transparent 16rem),
-      linear-gradient(180deg, rgba(11, 36, 71, 0.08), rgba(11, 36, 71, 0.62));
+      radial-gradient(circle at 50% 8%, rgba(181, 212, 244, 0.32), transparent 30rem),
+      linear-gradient(180deg, #f8fbfd 0%, #eef5fb 100%);
   }
-  .hero__visual-motif {
-    position: absolute;
-    right: var(--space-5);
-    bottom: var(--space-5);
-    width: min(70%, 360px);
-    opacity: 0.72;
-    z-index: 1;
+  .cardiac-simple__header {
+    text-align: center;
+    margin-bottom: var(--space-8);
   }
-
-  /* ---- services (navy) ---- */
-  .services__h { max-width: 24ch; }
-  .services__grid { margin-top: var(--space-7); row-gap: var(--gutter); }
-  .svc {
-    height: 100%;
-    border: 1px solid var(--color-on-navy-line);
-    border-radius: var(--radius);
-    padding: var(--space-6);
+  .cardiac-simple__grid {
+    row-gap: var(--space-6);
   }
-  .svc__icon {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 48px; height: 48px;
-    border-radius: var(--radius);
-    background: rgba(212,160,23,0.14);
-    color: var(--color-amber); /* bright amber on navy (2.1) */
+  .cardiac-simple__section {
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(11, 36, 71, 0.08);
+    border-radius: var(--radius-lg);
+    padding: var(--space-7);
+    box-shadow: 0 14px 34px rgba(11, 36, 71, 0.07);
+  }
+  .cardiac-simple__section h2 {
+    font-size: var(--fs-h3);
     margin-bottom: var(--space-5);
   }
-  .svc__name { color: #fff; margin-bottom: var(--space-3); }
-  .svc__line { color: var(--color-on-navy-dim); font-size: 0.9375rem; line-height: 1.6; }
+  .cardiac-simple__section ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-4);
+    color: var(--color-slate);
+    font-size: var(--fs-lead);
+    line-height: 1.45;
+  }
+  .cardiac-simple__section li {
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid rgba(11, 36, 71, 0.08);
+  }
+  .cardiac-simple__section li:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+  .cardiac-simple__section p {
+    color: var(--color-slate);
+    font-size: var(--fs-lead);
+    line-height: 1.55;
+  }
+  .cardiac-simple__section p + p {
+    margin-top: var(--space-4);
+  }
+  .cardiac-simple__cta {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-8);
+  }
 
-  /* ---- credibility ---- */
-  .cred__aside { display: grid; gap: var(--gutter); align-content: start; }
-  .credential {
-    background: var(--color-navy);
-    color: #fff;
-    border-radius: var(--radius);
-    padding: var(--space-6);
+  @media (max-width: 880px) {
+    .cardiac-simple__header {
+      text-align: left;
+    }
+    .cardiac-simple__section {
+      padding: var(--space-6);
+    }
+    .cardiac-simple__cta {
+      justify-content: flex-start;
+    }
   }
-  .credential__tag {
-    display: inline-flex; align-items: center; gap: var(--space-2);
-    font-size: var(--fs-small); font-weight: var(--weight-medium);
-    letter-spacing: 0.05em; text-transform: uppercase;
-    color: var(--color-amber);
-    margin-bottom: var(--space-4);
-  }
-  .credential__line {
-    font-family: var(--font-heading);
-    font-size: var(--fs-h3);
-    line-height: 1.3;
-  }
-  .cred__lead { margin-top: var(--space-4); font-size: var(--fs-lead); color: var(--color-slate); }
-  .cred__note { margin-top: var(--space-5); color: var(--color-slate); }
-
-  /* ---- closing ---- */
-  .close { text-align: center; }
-  .close__inner { display: flex; flex-direction: column; align-items: center; gap: var(--space-5); }
-  .close__sub { font-size: var(--fs-lead); color: var(--color-on-navy-dim); }
 </style>
